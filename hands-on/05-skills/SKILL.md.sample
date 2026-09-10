@@ -1,0 +1,45 @@
+---
+name: add-endpoint
+description: このプロジェクトにAPIエンドポイントを追加する。新しいAPIを作るとき、既存のAPIにエンドポイントを足すときに使う。
+---
+
+# APIエンドポイントの追加手順
+
+以下の手順を順番どおりに実施する。
+
+## 1. 仕様を先に固める
+
+- HTTPメソッド・パス・リクエスト・レスポンスを明文化し、ユーザーに提示して合意を取ってから実装を始める
+- 既存の `app/api/todos/route.ts` と `app/api/todos/[id]/route.ts` を読み、形を揃える
+
+## 2. データ操作を `lib/store.ts` に追加する
+
+- 配列操作を `route.ts` の中に直接書かない。必ず `lib/store.ts` の関数として実装する
+- 関数名は動詞から始める（既存の `listTodos` / `findTodo` / `createTodo` / `updateTodo` / `deleteTodo` に合わせる）
+
+## 3. 入力検証を `lib/schema.ts` に追加する
+
+- リクエストボディやクエリパラメータを受け取る場合は、zodスキーマを `lib/schema.ts` に定義する
+- 検証は `safeParse` を使う
+
+## 4. `route.ts` を作る
+
+- 配置は `app/api/` 配下の1エンドポイント1ディレクトリ（`app/api/todos/<name>/route.ts`）
+- エクスポートするハンドラ名はHTTPメソッド名（`GET` / `POST` / `PATCH` / `DELETE`）
+- レスポンスのJSONはキー付きオブジェクトで返す。配列やプリミティブを直接返さない
+- エラーレスポンスは `lib/api-error.ts` のヘルパー（`badRequest` / `notFound` / `validationError`）だけを使う。独自のエラー形式を新たに作らない
+- ステータスコードは 作成成功=201 / 削除成功=204 / 検証エラー=400 / 対象が存在しない=404 に揃える
+- エラーメッセージは日本語で書く
+
+## 5. テストを書く
+
+- `tests/<name>.test.ts` に vitest で書く
+- `route.ts` からハンドラを import し、`new Request(...)` を渡して検証する
+- 正常系と異常系（検証エラー、対象が存在しない場合）の両方を書く
+
+## 6. 検証して報告する
+
+- `npm run typecheck` と `npm test` を実行し、両方が通るまで直す
+- 通ったら、追加したエンドポイントのメソッド・パス・レスポンス例を要約して報告する
+
+使い方: `/add-endpoint 完了済みのTODOを一括削除する`

@@ -1,0 +1,41 @@
+# sample-todo-app
+
+Next.js（App Router）+ TypeScript のTODO管理アプリ。データはインメモリで保持する。
+
+## コマンド
+
+- 開発サーバー: `npm run dev`
+- 型チェック: `npm run typecheck`
+- テスト: `npm test`
+
+## APIエンドポイントの規約
+
+### 配置・命名
+
+- API Routes は `app/api/` 配下に置く。1エンドポイント1ディレクトリ（例: `app/api/todos/stats/route.ts`）
+- エクスポートするハンドラ名はHTTPメソッド名（`GET` / `POST` / `PATCH` / `DELETE`）
+- データ操作は必ず `lib/store.ts` の関数経由で行う。`route.ts` の中に配列操作を直接書かない
+- `lib/store.ts` に追加する関数名は動詞から始める（`listTodos` / `findTodo` / `createTodo` に合わせる）
+- レスポンスのJSONはキー付きオブジェクトで返す。配列やプリミティブを直接返さない（例: `{ "todos": [...] }`）
+
+### 入力検証
+
+- リクエストボディ・クエリパラメータの検証はzodで行い、スキーマは `lib/schema.ts` に定義する
+- 検証は `safeParse` を使い、失敗時は `lib/api-error.ts` の `validationError()` を返す
+
+### エラー処理
+
+- エラーレスポンスは `lib/api-error.ts` のヘルパー（`badRequest` / `notFound` / `validationError`）だけを使う
+- 独自のエラーJSON形式を新たに作らない。形式は `{ "error": { "code": ..., "message": ... } }` に統一する
+- エラーメッセージは日本語で書く
+- ステータスコードは 作成成功=201 / 削除成功=204 / 検証エラー=400 / 対象が存在しない=404 に揃える
+
+### テスト（必須）
+
+- **エンドポイントを追加・変更したら、必ずテストを追加する。テストのない実装は完了とみなさない**
+- テストは `tests/` 配下に `*.test.ts` という名前で置き、vitestで書く
+- 正常系と異常系（検証エラー、対象が存在しない場合）の両方を書く
+
+## 完了の定義
+
+実装が終わったら必ず `npm run typecheck` と `npm test` を実行し、両方が通る状態にする。

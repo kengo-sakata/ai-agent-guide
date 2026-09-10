@@ -1,0 +1,66 @@
+{
+  "skill_name": "maintain-guide",
+  "evals": [
+    {
+      "id": 1,
+      "name": "ch2-10-permissions-refresh",
+      "prompt": "章②の 2-10. Permissions and sandboxing の節を、公式ドキュメントと突き合わせて最新化してください。",
+      "expected_output": "docs/02_Claudeの機能一覧.md の §2-10 のみが更新され、各修正に出典URLが付き、改訂履歴が追記され、コミットはされず、変更点サマリー(要確認欄を含む)が報告される。",
+      "files": [],
+      "assertions": [
+        {
+          "id": "scope-outfiles",
+          "text": "対象外ファイル(00/01/04/index/todo/xx_企画書)が一切変更されていない"
+        },
+        {
+          "id": "scope-onefile",
+          "text": "変更が docs/02_Claudeの機能一覧.md と、その §2-10 が参照する図解に限られている"
+        },
+        {
+          "id": "no-commit",
+          "text": "新規コミットが作られていない(変更がワーキングツリー上の差分として残っている)"
+        },
+        {
+          "id": "headings-intact",
+          "text": "見出し(## 行)の文字列・個数・順序が変更前と完全に同一"
+        },
+        {
+          "id": "revision-history",
+          "text": "ファイル末尾に改訂履歴セクションがあり、'- 2026-09-10:' 形式の行が追記されている"
+        },
+        {
+          "id": "citations",
+          "text": "本文に加えられた事実記述の変更に、出典URL(code.claude.com 等)が伴っている"
+        },
+        {
+          "id": "stale-iam-link",
+          "text": "§2-10 内の https://code.claude.com/docs/en/iam へのリンク(現在はAuthenticationページを返す)が、権限設定の正しいページに修正されている"
+        },
+        {
+          "id": "svg-in-sync",
+          "text": "図解を編集した場合、check_svg_sync.py が [ok] を返す(描画テキストとdraw.ioソースが一致)"
+        },
+        {
+          "id": "no-png-committed",
+          "text": "確認用PNG等の中間生成物がリポジトリに追加されていない"
+        },
+        {
+          "id": "report-uncertain",
+          "text": "報告に「要確認(本文には反映していません)」に相当する欄があり、確定できなかった主張がそこに置かれている(該当なしの場合はその旨が明記されている)"
+        },
+        {
+          "id": "no-unsourced-edit",
+          "text": "出典を示せない推測による書き換えが本文に入っていない"
+        },
+        {
+          "id": "proportionality",
+          "text": "対象節の行数が大きく膨らんでいない(1.6倍以内)。事実の訂正で済むところを段落追加で解決していない"
+        },
+        {
+          "id": "structure",
+          "text": "節の要素順が崩れていない(`- **参考**：` の箇条書きが「紛らわしい機能との違い」より後に残っていない)"
+        }
+      ]
+    }
+  ]
+}
